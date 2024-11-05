@@ -1,0 +1,127 @@
+#!/bin/bash
+
+create()
+{
+	echo "Enter the name of database you want to create ?"
+	read db
+	if[-e "$db"];then
+		echo "database already exists."
+	else
+		touch "$db"
+		echo "database create successfully."
+	fi
+}
+
+insert()
+{
+	if[!-e "db"];then
+		echo "database dosen't exist.you want to create first..."
+	else
+		echo "enter the number of records to be added."
+		read no
+
+	while["$no" -gt 0];do
+		echo "enter roll number "
+		read rno
+
+	if grep -q "^$rno:" "$db";then
+		echo "records already exists.."
+	else
+		echo "Enter Name"
+		read name
+		echo "enter subj 1 marks"
+		read sub1
+		echo "enter subj 2 marks"
+		read sub2
+		echo "enter subj 3 marks"
+		read sub3
+		average=$(((sub1+sub2+sub3)/3))
+		record="$rno:$name:$sub1:sub2:sub3:$average"
+		echo "$record">>"$db"
+		echo "record added succesfully"
+		no=$(($no-1))
+		fi
+	done
+	fi	
+}
+
+search()
+{
+	echo "enter roll number"
+	read rno
+	if grep -q "^$rno:" "$db";then
+		echo "record match successfully..."
+		grep "^$rno:" "$db"
+	else
+		echo "record not found"
+	fi
+}
+
+modify()
+{
+	echo "enter the roll number :"
+	read rno
+	if grep -q "^$rno:" "$db";then
+		grep -v "^$rno:" "$db">temp.txt
+		mv temp.txt "$db"
+
+		echo "Enter new Name"
+		read name
+		echo "enter new subj 1 marks"
+		read sub1
+		echo "enter new subj 2 marks"
+		read sub2
+		echo "enter new subj 3 marks"
+		read sub3
+		average=$(((sub1+sub2+sub3)/3))
+		record="$rno:$name:$sub1:sub2:sub3:$average"
+		echo "$record">>"$db"
+		echo "record modified succesfully"
+	else
+		echo "record not found"
+	fi
+}
+
+delete()
+{
+	echo "enter roll number "
+	read rno
+	if grep -q "^$rno:" "$db";then
+		grep -v "^$rno:" "$db">temp.txt
+		mv temp.txt "$db"
+		echo "record deleted "
+	else
+		echo "record not found"
+	fi
+}
+
+display()
+{
+	echo "database contains :"
+	cat "$db"
+}
+
+while true;do
+	echo "*****MENU*****"
+	echo "1) CREATE"
+	echo "2) INSERT"
+	echo "3) SEARCH"
+	echo "4) MODIFY"
+	echo "5) DELETE"
+	echo "6) DISPLAY"
+	echo "7) EXIT"
+	echo "enter choice"
+	read choice
+
+	case $choice in
+		1) create;;
+		2) insert;;
+		3) search;;
+		4) modify;;
+		5) delete;;
+		6) display;;
+		7) exit;;
+		*) echo "ENTER VALID CHOICE BETWWEN 1 TO 7";;
+	esac
+done
+	
